@@ -1,0 +1,29 @@
+CHART NAME: {{ .Chart.Name  }}
+CHART VERSION: {{ .Chart.Version  }}
+APP VERSION: {{ .Chart.AppVersion  }}
+
+** Please be patient while the chart is being deployed **
+
+
+Get the list of pods by executing:
+  kubectl get pods --namespace {{ .Release.Namespace }} -l app.kubernetes.io/name={{ template "common.names.fullname" . }}
+
+Get deployment:
+  kubectl get pods --namespace {{ .Release.Namespace }} -l app.kubernetes.io/name={{ .Release.Name }}
+
+Access the pod you want to debug by executing
+  kubectl exec --namespace {{ .Release.Namespace }} -ti <NAME OF THE POD> -- sh
+
+List a helm releases which installed
+  helm ls --namespace {{ .Release.Namespace }}
+
+How to access your application inside of kubernetes from different applications:
+  From different namespace: http://{{ template "common.names.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  From same namespace: http://{{ template "common.names.fullname" . }}
+
+** Don't edit your manifests which applied by helm, use helm upgrade instead and just edit values file **
+
+** If you see error with pending rollback/installation,
+    check release secrets with name sh.helm.release and find one with status Pending,
+    delete it and try to install or upgrade chart again ***
+

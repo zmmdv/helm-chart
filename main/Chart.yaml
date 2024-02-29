@@ -1,0 +1,12 @@
+apiVersion: v2
+dependencies:
+- name: common
+  repository: oci://registry-1.docker.io/bitnamicharts
+  tags:
+  - bitnami-common
+engine: gotpl
+maintainers:
+  - name: Ziyaddin Mammadov
+name: main
+version: 2.1.2
+appVersion: stable

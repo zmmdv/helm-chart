@@ -1,0 +1,38 @@
+nameOverride: "your-application"
+fullnameOverride: "your-application"
+commonLabels:
+  app: "your-application"
+commonAnnotations:
+  app: "your-application"
+image:
+  registry: "your-image-registry" # example: docker.io
+  repository: "your-image-repository" # example: zmmdv/helm
+  tag: "your-image-tag" # Tag for your image example: 1.0.0 or latest
+  digest: ""
+  pullPolicy: IfNotPresent # Always or IfNotPresent
+  pullSecrets: ["your-image-pull-secret"] # secret which contains credentials to registry
+replicaCount: 1 # Number of replicas you want
+containerPorts:
+  - name: http # name for port
+    containerPort: 8080 # Port on container which will be listened
+    protocol: TCP # protocol on which port is working
+  - name: metrics
+    containerPort: 8081
+    protocol: TCP
+service:
+  type: ClusterIP # Type of service which must be created
+  ports:
+    - name: http # name for port
+      port: 80 # Port which will be listened on server
+      protocol: TCP # Protocol
+      targetPort: 8080 # Target port of pod which is provided above
+    - name: metrics
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+serviceAccount:
+#> NOTE don't forget to adjust IAM policy according to this, name of this SA must be in allowed SA's
+  create: true # Create or not service account for this service 
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/ROLE_YOU_WILL_ASSUME
+  automountServiceAccountToken: true

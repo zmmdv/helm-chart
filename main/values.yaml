@@ -1,0 +1,235 @@
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+
+kind: Deployment
+
+kubeVersion: ""
+
+nameOverride: "main"
+
+fullnameOverride: "main"
+
+namespaceOverride: ""
+
+commonLabels:
+  app: "main"
+
+commonAnnotations:
+  app: "main"
+
+diagnosticMode:
+  enabled: false
+  command:
+    - sleep
+  args:
+    - infinity
+
+image:
+  registry: ""
+  repository: ""
+  tag: ""
+  digest: ""
+  pullPolicy: Always
+  pullSecrets: []
+
+replicaCount: 1
+
+secret:
+  enabled: false
+  stringData:
+
+externalSecretApiVersion: {} #external-secrets.io/v1beta1
+
+secretStore:
+  enabled: false
+
+externalSecret:
+  enabled: false
+
+configmap:
+  enabled: false
+  data:
+
+containerPorts:
+  - name: main
+    containerPort: &mainPort 8080
+    protocol: &mainProtocol TCP
+  - name: management
+    containerPort: &managementPort 8081
+    protocol: &manamentProtocol TCP
+
+livenessProbe:
+  enabled: false
+  httpGet:
+    path: /actuator/health
+    port: *managementPort
+  initialDelaySeconds: 50
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+readinessProbe:
+  enabled: false
+  httpGet:
+    path: /actuator/health/readiness
+    port: *managementPort
+  initialDelaySeconds: 50
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+startupProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+customLivenessProbe: {}
+
+customReadinessProbe: {}
+
+customStartupProbe: {}
+
+resources:
+  limits: {}
+  requests: {}
+
+podSecurityContext:
+  enabled: false
+  fsGroup: 1001
+
+containerSecurityContext:
+  enabled: false
+  runAsUser: 1001
+  runAsNonRoot: true
+  readOnlyRootFilesystem: false
+
+existingConfigmap:
+
+command: []
+
+args: []
+
+hostAliases: []
+
+podLabels: {}
+
+podAnnotations: {}
+
+podAffinityPreset: ""
+
+podAntiAffinityPreset: soft
+
+autoscaling:
+  enabled: false
+  minReplicas: "2"
+  maxReplicas: "5"
+  targetCPU: "50"
+  targetMemory: "50"
+
+nodeAffinityPreset:
+  type: ""
+  key: ""
+  values: []
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: "25%"
+    maxUnavailable: '25%'
+
+podManagementPolicy: OrderedReady
+
+priorityClassName: ""
+
+topologySpreadConstraints: []
+
+schedulerName: ""
+
+terminationGracePeriodSeconds: "600"
+
+lifecycleHooks: {}
+
+extraEnvVars:
+  - name: POD_ID
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
+
+extraEnvVarsCM: ""
+
+extraEnvVarsSecret: ""
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+sidecars: []
+
+initContainers: []
+
+service:
+  annotations: {}
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      protocol: *mainProtocol
+      targetPort: *mainPort
+    - name: management
+      port: 8081
+      protocol: *manamentProtocol
+      targetPort: *managementPort
+
+  nodePorts:
+    http: ""
+    https: ""
+  clusterIP: ""
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  externalTrafficPolicy: Cluster
+  extraPorts: []
+  sessionAffinity: None
+  sessionAffinityConfig: {}
+
+ingress:
+  enabled: false
+  pathType: ImplementationSpecific
+  apiVersion: ""
+  hostname: example.com
+  ingressClassName: "nginx"
+  path: /
+  annotations: {}
+  tls: false
+  selfSigned: false
+  extraHosts: []
+  extraPaths: []
+  extraTls: []
+  secrets: []
+  extraRules: []
+
+serviceAccount:
+  create: false
+  name: ""
+  annotations: {}
+  automountServiceAccountToken: true
+
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: true
+    labels: {}
+    namespace: "monitoring"
+    annotations: {}
+    jobLabel: ""
+    endpoints:
+    selector: {}
